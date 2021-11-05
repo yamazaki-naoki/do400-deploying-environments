@@ -39,7 +39,7 @@ pipeline {
                     -Dquarkus.container-image.name=do400-deploying-environments \
                     -Dquarkus.container-image.username=$QUAY_USR \
                     -Dquarkus.container-image.password="$QUAY_PSW" \
--Dquarkus.container-image.tag=build-${BUILD_NUMBER} \
+                    -Dquarkus.container-image.tag=build-${BUILD_NUMBER} \
                     -Dquarkus.container-image.push=true
                 '''
             }
@@ -53,7 +53,7 @@ steps {
 sh """
 oc set image \
 deployment ${DEPLOYMENT_STAGE} \
-shopping-cart-stage=quay.io/${QUAY_USR}/do400-deploying-environments:build-${BUILD_NUMBER} \
+shopping-cart-stage=quay.io/yamazaki-naoki/do400-deploying-environments:build-${BUILD_NUMBER} \
 -n ${APP_NAMESPACE} --record
 """
 }
