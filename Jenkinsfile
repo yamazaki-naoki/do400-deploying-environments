@@ -1,20 +1,20 @@
 pipeline {
-agent {
-node {
-label 'maven'
-}
-}
+    agent {
+        node {
+            label 'maven'
+        }
+    }
     environment {
             RHT_OCP4_DEV_USER = 'cjzjxj'
             DEPLOYMENT_CONFIG_STAGE = 'shopping-cart-stage'
             DEPLOYMENT_CONFIG_PRODUCTION = 'shopping-cart-production'
+    }
+    stages {
+        stage('Tests') {
+            steps {
+                sh './mvnw clean test'
+            }
         }
-stages {
-stage('Tests') {
-steps {
-sh './mvnw clean test'
-}
-}
         stage('Package') {
             steps {
                 sh '''
@@ -39,14 +39,13 @@ sh './mvnw clean test'
                     -Dquarkus.container-image.name=do400-deploying-environments \
                     -Dquarkus.container-image.username=$QUAY_USR \
                     -Dquarkus.container-image.password="$QUAY_PSW" \
--Dquarkus.container-image.tag=build-${BUILD_NUMBER} \                    
--Dquarkus.container-image.push=true
+                    -Dquarkus.container-image.push=true
                 '''
             }
         }
         stage('Deploy - Stage') {
             environment {
-                APP_NAMESPACE = "${RHT_OCP4_DEV_USER}-shopping-cart-stage"
+                APP_NAMESPACE = "cjzjxj-shopping-cart-stage"
             }
             steps {
                 sh "oc rollout latest dc/${DEPLOYMENT_CONFIG_STAGE} -n ${APP_NAMESPACE}"
@@ -54,7 +53,7 @@ sh './mvnw clean test'
         }
         stage('Deploy - Production') {
             environment {
-                APP_NAMESPACE = "${RHT_OCP4_DEV_USER}-shopping-cart-production"
+                APP_NAMESPACE = "cjzjxj-shopping-cart-production"
             }
             input { message 'Deploy to production?' }
             steps {
@@ -63,7 +62,6 @@ sh './mvnw clean test'
                     -n ${APP_NAMESPACE}
                 '''
             }
-
+        }
+    }
 }
-}
-
