@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Deploy - Stage') {
             environment {
-                APP_NAMESPACE = "cjzjxj-shopping-cart-stage"
+                APP_NAMESPACE = "${RHT_OCP4_DEV_USER}-shopping-cart-stage"
             }
             steps {
                 sh "oc rollout latest dc/${DEPLOYMENT_CONFIG_STAGE} -n ${APP_NAMESPACE}"
@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Deploy - Production') {
             environment {
-                APP_NAMESPACE = "cjzjxj-shopping-cart-production"
+                APP_NAMESPACE = "${RHT_OCP4_DEV_USER}-shopping-cart-production"
             }
             input { message 'Deploy to production?' }
             steps {
